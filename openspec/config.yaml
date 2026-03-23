@@ -1,20 +1,36 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: ai-infra-platform — public reference repo
+  A layered GitOps platform for deploying AI/ML infrastructure on Kubernetes.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Repo structure (4 layers + supporting dirs):
+  - terraform/         Layer 1 — provisioning. One module per cloud target (Hetzner, GCP, AWS).
+                       Authenticates via env vars (HCLOUD_TOKEN, GOOGLE_CREDENTIALS, AWS_ACCESS_KEY_ID).
+                       Outputs kubeconfig consumed by GitOps bootstrap.
+  - clusters/          Layer 2 — GitOps bootstrap. Each cluster folder declares which platform modules
+                       it activates. Bootstrap is the handoff between Terraform and ArgoCD — run once,
+                       then ArgoCD owns everything.
+  - platform/          Layer 3 — core product. Every subfolder is a self-contained, opt-in module.
+                       Clusters activate only what they need via kustomization.yaml.
+                       Includes platform/ai/ modules for AI/ML workloads.
+  - apps/              Layer 4 — example workloads. Shows how client workloads plug into the platform
+                       layer. No personal apps, no homelab-specific services.
+  - script/            Automation. bootstrap-cluster.sh spins up a real cluster in ~5 minutes.
+                       new-client.sh for ops efficiency once clients are onboarded.
+  - .github/           CI — the credibility signal. smoke-test.yaml spins up a real Hetzner cluster,
+                       deploys core modules, runs verify-platform.sh, then destroys it. Runs on every
+                       push to main. Permanent k3s test target: Hetzner CX22 at €3.29/mo.
+  - docs/              Runbooks (e.g. restore-velero-backup.md). Signal that this has been operated,
+                       not just installed.
+
+  Tech stack: Terraform, Kubernetes (k3s), ArgoCD, Kustomize, Helm, Hetzner/GCP/AWS
+  Conventions: conventional commits, modular opt-in platform design, GitOps-first
+rules:
+  proposal:
+    - Respect the 4-layer architecture; changes should fit cleanly into one layer
+    - Prefer opt-in modules over mandatory platform-wide changes
+    - Consider multi-cloud impact (Hetzner, GCP, AWS) for terraform/ changes
+  tasks:
+    - Keep tasks scoped to a single layer where possible
+    - CI smoke test must remain green — flag any changes that affect .github/workflows/smoke-test.yaml
