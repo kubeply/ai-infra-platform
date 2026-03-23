@@ -1,6 +1,6 @@
 ---
-name: "Push"
-description: Fetch origin, rebase local commits on top of latest remote changes if needed, then push to main
+name: push
+description: Fetch origin, rebase local commits on top of the latest remote changes if needed, then push the current branch.
 category: Workflow
 tags: [git, push, rebase]
 ---
@@ -13,7 +13,7 @@ Fetch, rebase if needed, and push the current branch to origin.
 
    Run `git status` and `git log @{u}..HEAD --oneline` to check if there are local commits ahead of the remote.
 
-   If there are uncommitted changes in the working tree, stop and tell the user to commit first (suggest `/commit`).
+   If there are uncommitted changes in the working tree, stop and tell the user to commit first (suggest `$commit`).
 
    If there are no local commits ahead of the remote, tell the user there is nothing to push and stop.
 
@@ -34,7 +34,7 @@ Fetch, rebase if needed, and push the current branch to origin.
 
    If the rebase produces conflicts:
    - Show the conflicting files to the user
-   - Stop and tell the user to resolve conflicts manually, then run `/push` again
+   - Stop and tell the user to resolve conflicts manually, then run `$push` again
    - Do NOT attempt to resolve conflicts automatically
 
 5. **Push**

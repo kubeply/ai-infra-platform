@@ -19,6 +19,7 @@ jobs:
     outputs:
       terraform: ${{ steps.filter.outputs.terraform }}
       yaml: ${{ steps.filter.outputs.yaml }}
+      k8s: ${{ steps.filter.outputs.k8s }}
       shell: ${{ steps.filter.outputs.shell }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -31,6 +32,10 @@ jobs:
             yaml:
               - '**/*.yaml'
               - '**/*.yml'
+            k8s:
+              - 'platform/**'
+              - 'clusters/**'
+              - 'apps/**'
             shell:
               - 'script/**/*.sh'
               - '.github/**/*.sh'
@@ -159,6 +164,33 @@ jobs:
         run: pip install yamllint
       - name: Lint YAML files
         run: yamllint -c .yamllint.yaml .
+
+  # ── Kubernetes ─────────────────────────────────────────────────────────────
+
+  k8s-validate:
+    needs: changes
+    if: needs.changes.outputs.k8s == 'true'
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFORM_VERSION: v0.6.7
+      # Pinned k8s schema version — matches k3s v1.29.x target.
+      K8S_SCHEMA_VERSION: 1.29.0
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install kubeconform
+        run: |
+          curl -sfLo /tmp/kubeconform.tar.gz \
+            "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
+          chmod +x /usr/local/bin/kubeconform
+      - name: Validate Kubernetes manifests
+        run: |
+          find platform/ clusters/ apps/ -name '*.yaml' -o -name '*.yml' 2>/dev/null \
+            | xargs -r kubeconform \
+                -strict \
+                -ignore-missing-schemas \
+                -kubernetes-version "${K8S_SCHEMA_VERSION}" \
+                -summary
 
   # ── Shell ──────────────────────────────────────────────────────────────────
 

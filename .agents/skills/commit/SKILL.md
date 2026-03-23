@@ -1,6 +1,6 @@
 ---
-name: "Conventional Commit"
-description: Stage only files edited in the current conversation and create a conventional commit with an AI-generated message
+name: commit
+description: Stage only files edited in the current conversation and create a conventional commit with an AI-generated message.
 category: Workflow
 tags: [git, commits, conventional-commits]
 ---

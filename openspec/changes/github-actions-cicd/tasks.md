@@ -12,7 +12,7 @@
 - [x] 2.3 Add `terraform-validate` job: init each changed module directory, run `terraform validate`, triggered only when `terraform/**` paths change
 - [x] 2.4 Add `terraform-plan` job: run `terraform plan -detailed-exitcode` for changed Layer 1 modules, post plan output as PR comment using `github-script`
 - [x] 2.5 Add `yaml-lint` job: install `yamllint`, run against all changed `.yaml`/`.yml` files using `yamllint -c .yamllint.yaml`
-- [ ] 2.6 Add `k8s-validate` job: install `kubeconform`, run against changed manifests under `platform/`, `clusters/`, `apps/` with pinned Kubernetes schema version
+- [x] 2.6 Add `k8s-validate` job: install `kubeconform`, run against changed manifests under `platform/`, `clusters/`, `apps/` with pinned Kubernetes schema version
 - [x] 2.7 Add `shellcheck` job: install `shellcheck`, run against all changed `.sh` files under `script/` and `.github/`
 - [x] 2.8 Add `paths` filters to each job so unrelated changes skip the relevant jobs
 - [x] 2.9 Add `concurrency` group with `cancel-in-progress: true` scoped to the PR number
@@ -20,13 +20,13 @@
 
 ## 3. Live Deploy Workflow (push to main)
 
-- [ ] 3.1 Create `.github/workflows/live-deploy.yaml` with trigger: `push` to `main`
-- [ ] 3.2 Add `sync` job: decode `LIVE_CLUSTER_KUBECONFIG` secret to a temp file, run `argocd app sync --all --wait --timeout 300`
-- [ ] 3.3 Add rollback step (runs `if: failure()`): detect degraded Applications via `argocd app list`, run `argocd app rollback <app>` for each
-- [ ] 3.4 Add concurrency group scoped to `main` branch with `cancel-in-progress: false` (queue, don't cancel)
-- [ ] 3.5 Ensure kubeconfig temp file is deleted at end of job (`if: always()`)
-- [ ] 3.6 Add `LIVE_CLUSTER_KUBECONFIG` to required secrets list in `docs/runbooks/ci-secrets.md`
-- [ ] 3.7 Pin all third-party actions to full commit SHA
+- [x] 3.1 Create `.github/workflows/live-deploy.yaml` with trigger: `push` to `main`
+- [x] 3.2 Add `sync` job: decode `LIVE_CLUSTER_KUBECONFIG` secret to a temp file, run `argocd app sync --all --wait --timeout 300`
+- [x] 3.3 Add rollback step (runs `if: failure()`): detect degraded Applications via `argocd app list`, run `argocd app rollback <app>` for each
+- [x] 3.4 Add concurrency group scoped to `main` branch with `cancel-in-progress: false` (queue, don't cancel)
+- [x] 3.5 Ensure kubeconfig temp file is deleted at end of job (`if: always()`)
+- [x] 3.6 Add `LIVE_CLUSTER_KUBECONFIG` to required secrets list in `docs/runbooks/ci-secrets.md`
+- [x] 3.7 Pin all third-party actions to full commit SHA
 
 ## 4. Infra Smoke Test Workflow (daily cron)
 
@@ -56,7 +56,7 @@
 ## 7. Runbooks
 
 - [x] 7.1 Create `docs/runbooks/ci-pr-validation.md`: how to read plan output, re-trigger jobs, fix common lint failures
-- [ ] 7.2 Create `docs/runbooks/ci-live-deploy.md`: how the ArgoCD sync + rollback works, how to recover if rollback also fails, how to manually re-trigger
+- [x] 7.2 Create `docs/runbooks/ci-live-deploy.md`: how the ArgoCD sync + rollback works, how to recover if rollback also fails, how to manually re-trigger
 - [x] 7.3 Create `docs/runbooks/ci-infra-smoke-test.md`: how to monitor daily runs, check Hetzner for orphaned resources, how to manually trigger
 - [x] 7.4 Create `docs/runbooks/ci-deploy.md`: step-by-step deploy procedure, how to approve production gate, rollback steps (terraform destroy + re-apply previous tag)
 - [x] 7.5 Update root `README.md` to add CI status badges and link to the runbooks
