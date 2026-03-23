@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/dependency-review-action@da173a3b5b2cff1046d7f72bd58b0e67bf5ef82e # v4.3.4
+      - uses: actions/dependency-review-action@5a2ce3f5b92ee19cbb1541a4984c76d921601d7c # v4.3.4
         with:
           # Fail on HIGH or CRITICAL severity CVEs introduced by this PR.
           fail-on-severity: high
