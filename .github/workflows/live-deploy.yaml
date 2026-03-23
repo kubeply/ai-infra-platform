@@ -1,0 +1,87 @@
+---
+name: live-deploy
+
+on:
+  push:
+    branches: [main]
+
+# Queue deploys; never cancel a running sync — out-of-order syncs corrupt state.
+concurrency:
+  group: live-deploy-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      ARGOCD_VERSION: v2.13.4
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Validate kubeconfig secret is set
+        run: |
+          if [ -z "${{ secrets.LIVE_CLUSTER_KUBECONFIG }}" ]; then
+            echo "::error::LIVE_CLUSTER_KUBECONFIG secret is not configured — see docs/runbooks/ci-secrets.md"
+            exit 1
+          fi
+
+      - name: Write kubeconfig
+        run: |
+          install -m 600 /dev/null /tmp/kubeconfig
+          echo "${{ secrets.LIVE_CLUSTER_KUBECONFIG }}" | base64 -d > /tmp/kubeconfig
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sfLo /usr/local/bin/argocd \
+            "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+          chmod +x /usr/local/bin/argocd
+
+      - name: Sync all ArgoCD Applications
+        id: sync
+        env:
+          KUBECONFIG: /tmp/kubeconfig
+        run: |
+          argocd app sync --all \
+            --wait \
+            --timeout 300 \
+            --port-forward \
+            --port-forward-namespace argocd
+
+      - name: Rollback degraded Applications
+        if: failure() && steps.sync.outcome == 'failure'
+        env:
+          KUBECONFIG: /tmp/kubeconfig
+        run: |
+          echo "Sync failed. Detecting degraded Applications..."
+          DEGRADED=$(
+            argocd app list \
+              --port-forward \
+              --port-forward-namespace argocd \
+              -o json 2>/dev/null \
+            | jq -r '.[] | select(.status.health.status == "Degraded") | .metadata.name'
+          )
+
+          if [ -z "$DEGRADED" ]; then
+            echo "No degraded Applications detected — sync may have timed out without a health state change."
+            exit 1
+          fi
+
+          ROLLBACK_FAILED=0
+          while IFS= read -r app; do
+            echo "Rolling back: $app"
+            if ! argocd app rollback "$app" \
+              --port-forward \
+              --port-forward-namespace argocd; then
+              echo "::error::Rollback failed for '$app' — manual recovery required. See docs/runbooks/ci-live-deploy.md"
+              ROLLBACK_FAILED=1
+            fi
+          done <<< "$DEGRADED"
+
+          exit $ROLLBACK_FAILED
+
+      - name: Remove kubeconfig
+        if: always()
+        run: rm -f /tmp/kubeconfig
