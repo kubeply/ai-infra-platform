@@ -1,0 +1,20 @@
+<svg width="900" height="60" viewBox="0 0 900 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#051a0f"/>
+      <stop offset="100%" style="stop-color:#0a1a10"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="60" fill="url(#bg1)" rx="6"/>
+  <rect x="0" y="0" width="4" height="60" fill="#1D9E75" rx="2"/>
+
+  <!-- Layer indicator -->
+  <rect x="20" y="18" width="60" height="20" rx="3" fill="#1D9E7525" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="50" y="32" font-family="'SF Mono', monospace" font-size="9" fill="#5DCAA5" text-anchor="middle" letter-spacing="0.5">LAYER 01</text>
+
+  <text x="96" y="33" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" font-weight="600" fill="#ffffff">terraform/</text>
+  <text x="230" y="33" font-family="'SF Mono', monospace" font-size="12" fill="#5DCAA5">— cloud provisioning</text>
+
+  <!-- Right label -->
+  <text x="860" y="33" font-family="'SF Mono', monospace" font-size="10" fill="#1D9E75" text-anchor="end" opacity="0.6">hetzner · gke · eks</text>
+</svg>

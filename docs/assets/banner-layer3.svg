@@ -1,0 +1,18 @@
+<svg width="900" height="60" viewBox="0 0 900 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0d0a1a"/>
+      <stop offset="100%" style="stop-color:#100d1f"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="60" fill="url(#bg3)" rx="6"/>
+  <rect x="0" y="0" width="4" height="60" fill="#534AB7" rx="2"/>
+
+  <rect x="20" y="18" width="60" height="20" rx="3" fill="#534AB725" stroke="#534AB7" stroke-width="0.5"/>
+  <text x="50" y="32" font-family="'SF Mono', monospace" font-size="9" fill="#AFA9EC" text-anchor="middle" letter-spacing="0.5">LAYER 03</text>
+
+  <text x="96" y="33" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" font-weight="600" fill="#ffffff">platform/</text>
+  <text x="216" y="33" font-family="'SF Mono', monospace" font-size="12" fill="#AFA9EC">— your core product</text>
+
+  <text x="860" y="33" font-family="'SF Mono', monospace" font-size="10" fill="#534AB7" text-anchor="end" opacity="0.8">networking · observability · security · ai</text>
+</svg>

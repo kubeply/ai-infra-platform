@@ -1,0 +1,42 @@
+<svg width="900" height="60" viewBox="0 0 900 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgai" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0a0f1a"/>
+      <stop offset="60%" style="stop-color:#0d1020"/>
+      <stop offset="100%" style="stop-color:#080e18"/>
+    </linearGradient>
+    <linearGradient id="aiaccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1D9E75"/>
+      <stop offset="50%" style="stop-color:#534AB7"/>
+      <stop offset="100%" style="stop-color:#185FA5"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="60" fill="url(#bgai)" rx="6"/>
+  <rect x="0" y="0" width="4" height="60" fill="url(#aiaccent)" rx="2"/>
+
+  <!-- AI glow dots -->
+  <circle cx="820" cy="20" r="15" fill="#534AB7" opacity="0.06"/>
+  <circle cx="860" cy="40" r="10" fill="#1D9E75" opacity="0.08"/>
+
+  <rect x="20" y="18" width="36" height="20" rx="3" fill="#ffffff08" stroke="#ffffff15" stroke-width="0.5"/>
+  <text x="38" y="32" font-family="'SF Mono', monospace" font-size="9" fill="#ffffff60" text-anchor="middle" letter-spacing="0.5">AI</text>
+
+  <text x="70" y="33" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" font-weight="600" fill="#ffffff">platform/ai/</text>
+  <text x="222" y="33" font-family="'SF Mono', monospace" font-size="12" fill="#AFA9EC">— differentiator modules</text>
+
+  <!-- Module pills -->
+  <rect x="500" y="19" width="46" height="18" rx="9" fill="#1D9E7518" stroke="#1D9E7540" stroke-width="0.5"/>
+  <text x="523" y="31" font-family="'SF Mono', monospace" font-size="9" fill="#5DCAA5" text-anchor="middle">vllm</text>
+
+  <rect x="552" y="19" width="52" height="18" rx="9" fill="#534AB718" stroke="#534AB740" stroke-width="0.5"/>
+  <text x="578" y="31" font-family="'SF Mono', monospace" font-size="9" fill="#AFA9EC" text-anchor="middle">qdrant</text>
+
+  <rect x="610" y="19" width="36" height="18" rx="9" fill="#185FA518" stroke="#185FA540" stroke-width="0.5"/>
+  <text x="628" y="31" font-family="'SF Mono', monospace" font-size="9" fill="#85B7EB" text-anchor="middle">gpu</text>
+
+  <rect x="652" y="19" width="70" height="18" rx="9" fill="#BA751718" stroke="#BA751740" stroke-width="0.5"/>
+  <text x="687" y="31" font-family="'SF Mono', monospace" font-size="9" fill="#FAC775" text-anchor="middle">workflows</text>
+
+  <rect x="728" y="19" width="66" height="18" rx="9" fill="#0F6E5618" stroke="#0F6E5640" stroke-width="0.5"/>
+  <text x="761" y="31" font-family="'SF Mono', monospace" font-size="9" fill="#5DCAA5" text-anchor="middle">postgres</text>
+</svg>
