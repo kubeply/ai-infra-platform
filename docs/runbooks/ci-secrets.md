@@ -81,7 +81,7 @@ Configure under **Settings → Secrets and variables → Actions → Variables**
 | Variable | Default | Description |
 |---|---|---|
 | `CLUSTER_NAME` | `ai-infra-platform` | Hetzner server name for the `deploy` workflow |
-| `CLUSTER_LOCATION` | `fsn1` | Hetzner datacenter (e.g. `nbg1`, `fsn1`, `hel1`) |
+| `CLUSTER_LOCATION` | `hel1` | Hetzner datacenter (e.g. `nbg1`, `fsn1`, `hel1`) |
 
 ---
 

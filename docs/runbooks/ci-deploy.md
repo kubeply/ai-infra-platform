@@ -115,6 +115,6 @@ The cluster API server endpoint is masked in workflow logs — retrieve it from 
 | `HZ_OBJECT_STORAGE_ACCESS_KEY` | Secret | `deploy` (backend) |
 | `HZ_OBJECT_STORAGE_SECRET_KEY` | Secret | `deploy` (backend) |
 | `CLUSTER_NAME` | Variable | `deploy` (default: `ai-infra-platform`) |
-| `CLUSTER_LOCATION` | Variable | `deploy` (default: `fsn1`) |
+| `CLUSTER_LOCATION` | Variable | `deploy` (default: `hel1`) |
 
 See [ci-secrets.md](./ci-secrets.md) for setup instructions.

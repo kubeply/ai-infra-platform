@@ -45,7 +45,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.HZ_OBJECT_STORAGE_SECRET_KEY }}
           # Override via repository variables; fall back to sensible defaults.
           TF_VAR_cluster_name: ${{ vars.CLUSTER_NAME || 'ai-infra-platform' }}
-          TF_VAR_location: ${{ vars.CLUSTER_LOCATION || 'fsn1' }}
+          TF_VAR_location: ${{ vars.CLUSTER_LOCATION || 'hel1' }}
           TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
           TF_VAR_ssh_private_key_path: /tmp/deploy_ssh_key
         run: terraform -chdir=terraform/modules/hetzner-k3s apply -auto-approve

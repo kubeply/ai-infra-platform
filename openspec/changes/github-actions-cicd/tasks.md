@@ -63,7 +63,7 @@
 
 ## 8. Validation
 
-- [ ] 8.1 Open a test PR with a deliberately unformatted Terraform file and verify `pr-validation` blocks it
+- [x] 8.1 Open a test PR with a deliberately unformatted Terraform file and verify `pr-validation` blocks it
 - [x] 8.2 Merge a passing PR to `main` and verify `live-deploy` syncs ArgoCD successfully
 - [x] 8.3 Manually trigger `infra-smoke-test` and verify end-to-end: provision → bootstrap → verify → destroy
 - [ ] 8.4 Push a `v0.1.0` tag and verify the `deploy` workflow triggers and pauses at the production environment gate
