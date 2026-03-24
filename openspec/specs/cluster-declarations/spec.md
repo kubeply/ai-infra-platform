@@ -51,3 +51,18 @@ The ArgoCD Helm chart version used in the bootstrap script SHALL be pinned to a 
 - **WHEN** Renovate scans `script/bootstrap-cluster.sh`
 - **THEN** it identifies the pinned ArgoCD Helm chart version
 - **AND** opens a PR when a newer chart version is available
+
+### Requirement: Dev cluster opts into the networking module at Layer 3
+
+After the platform-networking module is implemented, `clusters/ai-infra-platform/kustomization.yaml` SHALL add `../../platform/networking` to its resources list. This activates Traefik and cert-manager via ArgoCD on the dev cluster.
+
+#### Scenario: Dev cluster resources after platform-networking is activated
+
+- **WHEN** `clusters/ai-infra-platform/kustomization.yaml` is inspected after the platform-networking change is applied
+- **THEN** its `resources` list includes a reference to `../../platform/networking`
+- **AND** `kubectl kustomize clusters/ai-infra-platform/` produces manifests that include the Traefik and cert-manager ArgoCD Application resources
+
+#### Scenario: Dev cluster kustomize output remains valid
+
+- **WHEN** `kubectl kustomize clusters/ai-infra-platform/` is executed after the networking module is added
+- **THEN** it produces valid Kubernetes manifest YAML with no errors
