@@ -21,6 +21,8 @@ env:
   CLUSTER_NAME: ci-smoke-${{ github.run_id }}
   # Default to Helsinki because fsn1 capacity is frequently unavailable.
   CLUSTER_LOCATION: ${{ vars.SMOKE_TEST_LOCATION || 'hel1' }}
+  TF_STATE_BUCKET: terraform-state-ai-infra
+  TF_STATE_ENDPOINT: https://fsn1.your-objectstorage.com
 
 jobs:
   # ── 1. Provision ───────────────────────────────────────────────────────────
@@ -148,3 +150,13 @@ jobs:
           TF_VAR_ssh_public_key: placeholder
           TF_VAR_ssh_private_key_path: /tmp/ci_ssh_key
         run: terraform -chdir="${TF_DIR}" destroy -auto-approve
+      - name: Delete smoke-test state objects
+        if: success()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.HZ_OBJECT_STORAGE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.HZ_OBJECT_STORAGE_SECRET_KEY }}
+        run: |
+          aws s3 rm \
+            "s3://${TF_STATE_BUCKET}/${CLUSTER_NAME}/" \
+            --recursive \
+            --endpoint-url "${TF_STATE_ENDPOINT}" || true

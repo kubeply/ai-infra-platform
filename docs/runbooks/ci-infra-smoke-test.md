@@ -14,7 +14,7 @@ Full Layer 1 validation cycle — creates a real Hetzner cluster, verifies it, t
 | `provision` | — | `terraform apply` on a fresh Hetzner CX23, uploads kubeconfig artifact |
 | `bootstrap` | `provision` | Runs `script/bootstrap-cluster.sh` (installs ArgoCD, applies kustomization) |
 | `verify` | `bootstrap` | Runs `script/verify-platform.sh` (asserts cluster + platform health) |
-| `destroy` | all (always) | `terraform destroy` — runs even when earlier jobs fail |
+| `destroy` | all (always) | `terraform destroy`, then deletes the run-specific state objects on success |
 
 Expected end-to-end runtime: **10–20 minutes**.
 
@@ -65,8 +65,9 @@ hcloud server list --selector "ci=smoke"
 **State file:**
 
 Each smoke test uses a unique state key `ci-smoke-<run-id>/terraform.tfstate` in the
-`terraform-state-ai-infra` Object Storage bucket. Delete orphaned state keys after
-manually removing the server.
+`terraform-state-ai-infra` Object Storage bucket. On a successful `destroy` job,
+the workflow also deletes the run-specific state objects automatically. If `destroy`
+fails, leave the state in place until manual cleanup is complete.
 
 ---
 
