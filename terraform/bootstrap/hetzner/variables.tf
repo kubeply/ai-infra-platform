@@ -6,8 +6,8 @@ variable "bucket_name" {
 
 variable "region" {
   type        = string
-  default     = "eu-central-1"
-  description = "Hetzner Object Storage region. eu-central-1 maps to fsn1 (Falkenstein)."
+  default     = "fsn1"
+  description = "Hetzner Object Storage location/region. Must match the endpoint location (for example fsn1, nbg1, or hel1)."
 }
 
 variable "endpoint" {

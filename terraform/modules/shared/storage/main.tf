@@ -3,7 +3,8 @@
 # The AWS provider reads them automatically — no credentials in tfvars.
 #
 # This module uses the AWS provider pointed at a custom S3-compatible endpoint.
-# By default it targets Hetzner Object Storage (Falkenstein, eu-central-1).
+# By default it targets Hetzner Object Storage (Falkenstein). The region must
+# match the location encoded in the endpoint URL.
 # Set var.endpoint to target a different region or provider.
 
 provider "aws" {
@@ -16,7 +17,11 @@ provider "aws" {
   # Hetzner Object Storage does not expose the standard AWS validation endpoints.
   skip_credentials_validation = true
   skip_metadata_api_check     = true
+  skip_region_validation      = true
   skip_requesting_account_id  = true
+
+  # Required for S3-compatible endpoints — use path-style URLs.
+  s3_use_path_style = true
 }
 
 resource "aws_s3_bucket" "storage" {

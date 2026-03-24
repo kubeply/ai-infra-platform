@@ -25,7 +25,7 @@ backend. Skip if the bucket already exists.
 
 ```sh
 # Hetzner Object Storage keys
-# console.hetzner.cloud → Object Storage → Access Keys → Generate key
+# console.hetzner.cloud → Security → S3 Credentials
 export AWS_ACCESS_KEY_ID="<your-object-storage-access-key>"
 export AWS_SECRET_ACCESS_KEY="<your-object-storage-secret-key>"
 ```
@@ -48,7 +48,13 @@ Expected output:
 ```
 bucket_name = "terraform-state-ai-infra"
 endpoint    = "https://fsn1.your-objectstorage.com"
+region      = "fsn1"
 ```
+
+> [!NOTE]
+> The bucket region must match the endpoint location. For the default endpoint
+> `https://fsn1.your-objectstorage.com`, use `fsn1`. If you point Terraform at a
+> different Hetzner Object Storage location, update both values together.
 
 ---
 
@@ -62,7 +68,7 @@ endpoint    = "https://fsn1.your-objectstorage.com"
 export HCLOUD_TOKEN="<your-hetzner-api-token>"
 
 # Hetzner Object Storage keys (Terraform S3 backend)
-# console.hetzner.cloud → Object Storage → Access Keys → Generate key
+# console.hetzner.cloud → Security → S3 Credentials
 export AWS_ACCESS_KEY_ID="<your-object-storage-access-key>"
 export AWS_SECRET_ACCESS_KEY="<your-object-storage-secret-key>"
 ```
