@@ -16,7 +16,7 @@ set -euo pipefail
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 # renovate: datasource=helm depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
-ARGOCD_CHART_VERSION="7.8.0"
+ARGOCD_CHART_VERSION="9.4.15"
 
 ARGOCD_NAMESPACE="argocd"
 ARGOCD_RELEASE="argo-cd"
