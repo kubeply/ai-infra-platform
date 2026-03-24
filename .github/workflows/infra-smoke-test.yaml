@@ -19,6 +19,8 @@ env:
   TF_DIR: terraform/modules/hetzner-k3s
   # Unique cluster name per run prevents state collisions in Object Storage.
   CLUSTER_NAME: ci-smoke-${{ github.run_id }}
+  # Default to Helsinki because fsn1 capacity is frequently unavailable.
+  CLUSTER_LOCATION: ${{ vars.SMOKE_TEST_LOCATION || 'hel1' }}
 
 jobs:
   # ── 1. Provision ───────────────────────────────────────────────────────────
@@ -49,7 +51,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.HZ_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.HZ_OBJECT_STORAGE_SECRET_KEY }}
           TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
-          TF_VAR_location: fsn1
+          TF_VAR_location: ${{ env.CLUSTER_LOCATION }}
           TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
           TF_VAR_ssh_private_key_path: /tmp/ci_ssh_key
         run: |
@@ -142,7 +144,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.HZ_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.HZ_OBJECT_STORAGE_SECRET_KEY }}
           TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
-          TF_VAR_location: fsn1
+          TF_VAR_location: ${{ env.CLUSTER_LOCATION }}
           TF_VAR_ssh_public_key: placeholder
           TF_VAR_ssh_private_key_path: /tmp/ci_ssh_key
         run: terraform -chdir="${TF_DIR}" destroy -auto-approve

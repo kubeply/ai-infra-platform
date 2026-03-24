@@ -41,6 +41,9 @@ Navigate to **Actions → infra-smoke-test** in GitHub.
 gh workflow run infra-smoke-test.yaml
 ```
 
+The workflow defaults to `hel1` for smoke-test runs. Override it with the
+repository variable `SMOKE_TEST_LOCATION` if Hetzner capacity changes.
+
 ---
 
 ## Checking for orphaned Hetzner resources
@@ -82,7 +85,7 @@ terraform init \
   -backend-config="key=ci-smoke-<run-id>/terraform.tfstate"
 terraform destroy -auto-approve \
   -var="cluster_name=ci-smoke-<run-id>" \
-  -var="location=fsn1" \
+  -var="location=hel1" \
   -var="ssh_public_key=placeholder" \
   -var="ssh_private_key_path=~/.ssh/ci_key"
 ```
