@@ -18,7 +18,7 @@ triggering an ArgoCD sync. No Terraform is involved — Terraform is exercised s
 | Install ArgoCD CLI | Downloads the pinned ArgoCD CLI binary |
 | Install kubectl | Provides kubeconfig-aware Kubernetes access for Argo CD core mode |
 | Configure core access | Sets the kubeconfig namespace to `argocd`, then runs `argocd login localhost --core` |
-| Sync all Applications | Lists Applications with `argocd app list --core -o name`, then syncs each one with `argocd app sync <app> --core --wait --timeout 300` |
+| Sync all Applications | Lists Applications with `argocd app list --core -o name`, then runs `argocd app sync <app> --core` followed by `argocd app wait <app> --core --sync --health --timeout 300` |
 | Rollback (on failure) | Detects degraded Applications and rolls each back to the last healthy revision |
 | Remove kubeconfig | Deletes `/tmp/kubeconfig` — always runs, even on failure |
 
@@ -44,13 +44,15 @@ Then it syncs each Application:
 ```sh
 argocd app list --core -o name
 # Then, for each application:
-argocd app sync <app> --core --wait --timeout 300
+argocd app sync <app> --core
+argocd app wait <app> --core --sync --health --timeout 300
 ```
 
 - `argocd login localhost --core` configures the CLI to use Kubernetes auth instead of an Argo CD API token.
 - `argocd app list --core -o name` enumerates every Application registered with the ArgoCD instance.
-- `--wait` blocks until all Applications reach `Synced` + `Healthy` (or timeout).
-- `--timeout 300` — if any Application is not Healthy within 5 minutes the step fails.
+- `argocd app sync <app> --core` starts reconciliation for that Application.
+- `argocd app wait <app> --core --sync --health --timeout 300` blocks until the Application is `Synced` and `Healthy`.
+- `--timeout 300` means the wait step fails if the Application is not healthy within 5 minutes.
 - This avoids storing a separate Argo CD credential in GitHub secrets.
 
 On success the workflow exits 0 and the cluster is up to date.
