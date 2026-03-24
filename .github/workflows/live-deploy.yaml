@@ -17,6 +17,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
+      # renovate: datasource=github-releases depName=argoproj/argo-cd
       ARGOCD_VERSION: v2.13.4
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

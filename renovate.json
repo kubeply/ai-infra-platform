@@ -4,10 +4,42 @@
   "labels": ["dependencies"],
   "dependencyDashboard": true,
   "dependencyDashboardApproval": false,
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "separateMajorMinor": true,
+  "argocd": {
+    "managerFilePatterns": ["/^clusters\\/.*\\.ya?ml$/"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^script\\/bootstrap-cluster\\.sh$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+) registryUrl=(?<registryUrl>[^\\s]+)\\nARGOCD_CHART_VERSION=\"(?<currentValue>[^\"]+)\""
+      ]
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.github\\/workflows\\/live-deploy\\.ya?ml$/",
+        "/^\\.github\\/workflows\\/pr-validation\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+)\\n\\s+[A-Z0-9_]+_VERSION: (?<currentValue>[^\\s]+)"
+      ],
+      "versioningTemplate": "semver-coerced"
+    }
+  ],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
       "pinDigests": true,
+      "automerge": false
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "github actions",
       "automerge": false
     },
     {
@@ -16,11 +48,16 @@
       "automerge": false
     },
     {
-      "matchManagers": ["regex"],
-      "fileMatch": ["^script/bootstrap-cluster\\.sh$"],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+) registryUrl=(?<registryUrl>[^\\s]+)\\nARGOCD_CHART_VERSION=\"(?<currentValue>[^\"]+)\""
-      ],
+      "matchManagers": ["argocd", "custom.regex"],
+      "matchDatasources": ["helm"],
+      "matchPackageNames": ["argo-cd"],
+      "groupName": "argocd platform version",
+      "automerge": false
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": [".github/workflows/*.yaml", ".github/workflows/*.yml"],
+      "groupName": "ci tool versions",
       "automerge": false
     }
   ]

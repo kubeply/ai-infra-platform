@@ -21,6 +21,7 @@ jobs:
       yaml: ${{ steps.filter.outputs.yaml }}
       k8s: ${{ steps.filter.outputs.k8s }}
       shell: ${{ steps.filter.outputs.shell }}
+      renovate: ${{ steps.filter.outputs.renovate }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
@@ -39,6 +40,12 @@ jobs:
             shell:
               - 'script/**/*.sh'
               - '.github/**/*.sh'
+            renovate:
+              - 'renovate.json'
+              - '.renovaterc'
+              - '.renovaterc.json'
+              - '.renovaterc.json5'
+              - '.github/renovate.json5'
 
   # ── Terraform ──────────────────────────────────────────────────────────────
 
@@ -172,6 +179,7 @@ jobs:
     if: needs.changes.outputs.k8s == 'true'
     runs-on: ubuntu-latest
     env:
+      # renovate: datasource=github-releases depName=yannh/kubeconform
       KUBECONFORM_VERSION: v0.6.7
       # Pinned k8s schema version — matches k3s v1.29.x target.
       K8S_SCHEMA_VERSION: 1.29.0
@@ -206,3 +214,14 @@ jobs:
         run: |
           find script/ .github/ -name '*.sh' -print0 \
             | xargs -0 shellcheck --severity=warning
+
+  # ── Renovate ───────────────────────────────────────────────────────────────
+
+  renovate-config:
+    needs: changes
+    if: needs.changes.outputs.renovate == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Validate Renovate config
+        run: npx --yes -p renovate renovate-config-validator renovate.json
