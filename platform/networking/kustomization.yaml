@@ -1,0 +1,11 @@
+---
+# kustomization.yaml — platform networking module entry point.
+#
+# Clusters opt into Layer 3 networking by referencing this directory once.
+# It composes the ingress and TLS sub-components managed by ArgoCD.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - traefik/
+  - cert-manager/

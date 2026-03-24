@@ -30,10 +30,12 @@ resource "hcloud_server" "k3s" {
     # This is used as --tls-san so the kubeconfig is valid for remote kubectl access.
     PUBLIC_IP=$(curl -sf http://169.254.169.254/hetzner/v1/metadata/public-ipv4)
 
-    # Install k3s. The TLS SAN ensures the API server cert covers the public IP,
-    # making the output kubeconfig usable without certificate errors.
+    # Install k3s. Disable the bundled Traefik add-on so ArgoCD can manage a
+    # pinned Traefik release without conflicting with the k3s default.
+    # The TLS SAN ensures the API server cert covers the public IP, making the
+    # output kubeconfig usable without certificate errors.
     ${local.k3s_install_env}curl -sfL https://get.k3s.io | \
-      INSTALL_K3S_EXEC="server --tls-san $${PUBLIC_IP}" sh -
+      INSTALL_K3S_EXEC="server --disable=traefik --tls-san $${PUBLIC_IP}" sh -
   EOF
 }
 

@@ -1,0 +1,35 @@
+---
+# application.yaml — GitOps-managed Traefik ingress controller.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://helm.traefik.io/traefik
+    chart: traefik
+    # renovate: datasource=helm depName=traefik registryUrl=https://helm.traefik.io/traefik
+    targetRevision: "39.0.6"
+    helm:
+      releaseName: traefik
+      values: |
+        service:
+          type: ClusterIP
+        ports:
+          web:
+            hostPort: 80
+          websecure:
+            hostPort: 443
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

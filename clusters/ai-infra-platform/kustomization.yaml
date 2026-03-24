@@ -14,3 +14,4 @@ kind: Kustomization
 resources:
   - argocd.yaml
   - sealed-secrets.yaml
+  - ../../platform/networking
