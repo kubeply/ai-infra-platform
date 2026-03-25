@@ -6,15 +6,19 @@
     </linearGradient>
   </defs>
   <rect width="900" height="60" fill="url(#bg1)" rx="6"/>
+  <!-- left accent bar -->
   <rect x="0" y="0" width="4" height="60" fill="#1D9E75" rx="2"/>
 
-  <!-- Layer indicator -->
-  <rect x="20" y="18" width="60" height="20" rx="3" fill="#1D9E7525" stroke="#1D9E75" stroke-width="0.5"/>
-  <text x="50" y="32" font-family="'SF Mono', monospace" font-size="9" fill="#5DCAA5" text-anchor="middle" letter-spacing="0.5">LAYER 01</text>
+  <!-- layer pill -->
+  <rect x="20" y="18" width="64" height="22" rx="3" fill="#1D9E7530" stroke="#1D9E75" stroke-width="0.75"/>
+  <text x="52" y="33" font-family="'SF Mono',monospace" font-size="9" fill="#9FE1CB" text-anchor="middle" letter-spacing="0.5" font-weight="600">LAYER 01</text>
 
-  <text x="96" y="33" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" font-weight="600" fill="#ffffff">terraform/</text>
-  <text x="230" y="33" font-family="'SF Mono', monospace" font-size="12" fill="#5DCAA5">— cloud provisioning</text>
+  <!-- folder name -->
+  <text x="100" y="35" font-family="'SF Mono','Fira Code',monospace" font-size="17" font-weight="700" fill="#ffffff">terraform/</text>
 
-  <!-- Right label -->
-  <text x="860" y="33" font-family="'SF Mono', monospace" font-size="10" fill="#1D9E75" text-anchor="end" opacity="0.6">hetzner · gke · eks</text>
+  <!-- description -->
+  <text x="248" y="35" font-family="'SF Mono',monospace" font-size="12" fill="#9FE1CB">— cloud provisioning</text>
+
+  <!-- right label — white text, dimmed, always readable -->
+  <text x="878" y="35" font-family="'SF Mono',monospace" font-size="11" fill="#ffffff" opacity="0.55" text-anchor="end">hetzner · gke · eks</text>
 </svg>
