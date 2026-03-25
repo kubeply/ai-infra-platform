@@ -3,7 +3,6 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/actions/workflow/status/your-username/ai-infra-platform/infra-smoke-test.yaml?label=smoke%20test&style=flat-square&color=1D9E75" alt="Infra Smoke Test"/>
   <img src="https://img.shields.io/github/actions/workflow/status/your-username/ai-infra-platform/pr-validation.yaml?label=pr%20validation&style=flat-square&color=185FA5" alt="PR Validation"/>
   <img src="https://img.shields.io/github/actions/workflow/status/your-username/ai-infra-platform/dependency-review.yaml?label=dependency%20review&style=flat-square&color=534AB7" alt="Dependency Review"/>
   <img src="https://img.shields.io/badge/kubernetes-1.29%2B-326CE5?style=flat-square&logo=kubernetes&logoColor=white" alt="Kubernetes"/>
@@ -16,6 +15,9 @@
 > A modular, production-grade Kubernetes infrastructure platform for early-stage AI startups.
 > Terraform provisions the cluster. ArgoCD owns everything inside it.
 > Enable only the modules you need.
+
+> Operational cluster definitions, deploy/smoke workflows, bootstrap scripts,
+> and runbooks live in the private `platform-delivery` repository.
 
 <br/>
 
@@ -35,10 +37,10 @@ Two layers. One clean handoff.
                          │  terraform output kubeconfig
                          ▼
 ┌─────────────────────────────────────────────────────────┐
-│  LAYER 2 — clusters/ + platform/ + apps/               │
+│  LAYER 2 — private cluster declarations + platform/     │
 │  ArgoCD bootstrapped once, then owns everything.        │
-│  Cluster declares which platform modules are enabled.   │
-│  Platform modules are opt-in Helm releases.             │
+│  Private ops repo declares which modules are enabled.   │
+│  Public repo provides the reusable platform modules.    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -86,33 +88,30 @@ terraform/shared/
 
 <img src="./docs/assets/banner-layer2.svg" alt="Layer 2 — clusters" width="100%"/>
 
-Each cluster folder is a declaration: which provider module was used, which platform modules are active, and any cluster-specific value overrides. Bootstrap runs once after `terraform apply` — after that, ArgoCD owns the full reconciliation loop.
+Environment-specific cluster declarations now live in the private operational
+repository. This public repo keeps the reusable platform modules and Terraform
+building blocks that those private cluster declarations consume.
 
-**Bootstrap sequence**
+**Operational handoff**
 
 ```bash
-# 1. Provision infrastructure
-cd terraform/modules/hetzner-k3s
-terraform init && terraform apply -var-file=../../examples/hetzner-k3s.tfvars
-
-# 2. Bootstrap ArgoCD + root app (or use the helper script)
-./script/bootstrap-cluster.sh hetzner-k3s
-
-# 3. Done — ArgoCD deploys all enabled platform modules
+# 1. Provision infrastructure with the modules in this repo
+# 2. Bootstrap ArgoCD from the operational repo
+# 3. Point ArgoCD at private cluster declarations
+# 4. Reconcile the enabled public modules from this repo
 ```
 
 **Cluster config structure**
 
 ```yaml
-# clusters/hetzner-k3s/kustomization.yaml
+# clients/<environment>/cluster/kustomization.yaml
 resources:
-  - ../../platform/gitops
-  - ../../platform/networking
-  - ../../platform/observability
-  - ../../platform/security
-  - ../../platform/storage
-  - ../../platform/ai/qdrant      # opt-in
-  - ../../platform/ai/vllm        # opt-in
+  - ../../../ai-infra-platform/platform/networking
+  - ../../../ai-infra-platform/platform/observability
+  - ../../../ai-infra-platform/platform/security
+  - ../../../ai-infra-platform/platform/storage
+  - ../../../ai-infra-platform/platform/ai/qdrant
+  - ../../../ai-infra-platform/platform/ai/vllm
 ```
 
 Enable a module by adding its path. Disable it by removing the line. ArgoCD reconciles.
@@ -157,81 +156,31 @@ Optional modules for AI workloads. Each is independently opt-in.
 
 <img src="./docs/assets/banner-layer4.svg" alt="Layer 4 — apps" width="100%"/>
 
-A single generic example showing how application workloads plug into the platform layer using Kustomize base/overlays.
-
-```
-apps/_example/
-  base/
-    deployment.yaml    # generic app, references platform ingress + secrets
-    service.yaml
-    kustomization.yaml
-  overlays/
-    production/
-      patch-resources.yaml   # environment-specific overrides
-      kustomization.yaml
-```
-
-This is the pattern client workloads follow. The platform layer handles everything else.
+Example workloads are intentionally kept out of this public vitrine. The
+operational repo owns environment-specific app declarations and overlays.
+The public repo stays focused on the reusable platform surface.
 
 ---
 
 <img src="./docs/assets/banner-quickstart.svg" alt="Quickstart" width="100%"/>
 
-**Prerequisites**
-
-```bash
-# Required
-terraform >= 1.7
-kubectl >= 1.29
-helm >= 3.14
-argocd CLI >= 2.10
-
-# Optional but recommended
-k9s    # cluster UI
-trivy  # security scanning
-```
-
-**Spin up a full cluster in one command**
-
-```bash
-# Clone the repo
-git clone https://github.com/your-username/ai-infra-platform
-cd ai-infra-platform
-
-# Configure your target
-cp terraform/examples/hetzner-k3s.tfvars.example terraform/examples/hetzner-k3s.tfvars
-# → edit with your Hetzner token, domain, region
-
-# Bootstrap everything
-export HCLOUD_TOKEN="your_token"
-./script/bootstrap-cluster.sh hetzner-k3s
-
-# Verify all modules are healthy
-./script/verify-platform.sh
-```
-
-**Tear it down cleanly**
-
-```bash
-./script/destroy-cluster.sh hetzner-k3s
-```
-
-Useful for demo environments — spin up before a call, destroy after.
+This repository is now the public vitrine: reusable Terraform modules, platform
+manifests, and reference assets. The operational bootstrap flow lives in the
+private `platform-delivery` repository that consumes this repo as a submodule.
 
 ---
 
 ## CI
 
-Four GitHub Actions workflows cover the full platform lifecycle:
+This public repo keeps only lightweight public CI:
 
 | Workflow | Trigger | What it does |
 |---|---|---|
 | [`pr-validation`](.github/workflows/pr-validation.yaml) | PR open / sync | `terraform fmt`, `validate`, `plan` (Layer 1); `yamllint`; `shellcheck` |
-| [`infra-smoke-test`](.github/workflows/infra-smoke-test.yaml) | Daily 03:00 UTC | Provisions a real Hetzner cluster, bootstraps platform, verifies, destroys |
-| [`deploy`](.github/workflows/deploy.yaml) | Manual | Applies Layer 1 Terraform and bootstraps the long-lived cluster |
 | [`dependency-review`](.github/workflows/dependency-review.yaml) | PR open / sync | Audits CVEs and action pin integrity |
 
-If the smoke-test badge is green, the Terraform layer provisions correctly. See the [runbooks](docs/runbooks/) for operating and debugging each workflow.
+Live deploy, drift detection, smoke tests, and operator runbooks are maintained
+in the private operational repository.
 
 ---
 
@@ -243,10 +192,6 @@ ai-infra-platform/
 │   ├── modules/          # one module per cloud provider
 │   ├── shared/           # dns, storage, secrets-backend
 │   └── examples/         # .tfvars.example per target
-├── clusters/
-│   ├── bootstrap/        # argocd install + root app
-│   ├── hetzner-k3s/      # cluster config — module selection
-│   └── gke-standard/
 ├── platform/
 │   ├── gitops/
 │   ├── networking/
@@ -254,29 +199,16 @@ ai-infra-platform/
 │   ├── security/
 │   ├── storage/
 │   └── ai/               # gpu, vllm, qdrant, postgres, redis, workflows
-├── apps/
-│   └── _example/         # base + overlays pattern
-├── script/               # bootstrap, destroy, verify, new-client
-├── .github/workflows/    # lint, smoke-test, security-scan
-└── docs/
-    ├── architecture/
-    ├── conventions/
-    ├── runbooks/
-    └── troubleshooting/
+├── .github/workflows/    # public validation and dependency review
+└── docs/assets/          # README visuals
 ```
 
 ---
 
-## Documentation
+## Public vs. Operational
 
-| Document | Description |
-|----------|-------------|
-| [Cluster topology](./docs/architecture/cluster-topology.md) | Full architecture diagram and layer explanation |
-| [Terraform → GitOps handoff](./docs/architecture/terraform-gitops-handoff.md) | How provisioning and GitOps connect |
-| [Adding a module](./docs/conventions/module-structure.md) | How to add a new platform module |
-| [Restore from backup](./docs/runbooks/restore-velero-backup.md) | Velero restore procedure |
-| [Rotate secrets](./docs/runbooks/rotate-secrets.md) | External secrets rotation |
-| [ArgoCD sync failures](./docs/troubleshooting/argocd-sync-failures.md) | Common sync issues and fixes |
+- Public repo: reusable Terraform modules, Kubernetes platform manifests, reference assets
+- Private repo: live cluster declarations, bootstrap scripts, deploy/smoke workflows, operator runbooks, internal specs
 
 ---
 
