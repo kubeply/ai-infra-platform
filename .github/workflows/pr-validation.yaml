@@ -36,9 +36,7 @@ jobs:
             k8s:
               - 'platform/**'
               - 'clusters/**'
-              - 'apps/**'
             shell:
-              - 'script/**/*.sh'
               - '.github/**/*.sh'
             renovate:
               - 'renovate.json'
@@ -193,7 +191,7 @@ jobs:
           chmod +x /usr/local/bin/kubeconform
       - name: Validate Kubernetes manifests
         run: |
-          find platform/ clusters/ apps/ -name '*.yaml' -o -name '*.yml' 2>/dev/null \
+          find platform/ clusters/ -type f \( -name '*.yaml' -o -name '*.yml' \) 2>/dev/null \
             | xargs -r kubeconform \
                 -strict \
                 -ignore-missing-schemas \
@@ -212,7 +210,7 @@ jobs:
         run: sudo apt-get install -y shellcheck
       - name: Run shellcheck
         run: |
-          find script/ .github/ -name '*.sh' -print0 \
+          find .github/ -type f -name '*.sh' -print0 \
             | xargs -0 shellcheck --severity=warning
 
   # ── Renovate ───────────────────────────────────────────────────────────────

@@ -16,7 +16,7 @@ when their paths are unaffected.
 | `terraform-validate` | `terraform/**` | `terraform validate` per module |
 | `terraform-plan` | `terraform/**` | `terraform plan` + posts output as PR comment |
 | `yaml-lint` | `**/*.yaml`, `**/*.yml` | `yamllint` with `.yamllint.yaml` config |
-| `shellcheck` | `script/**/*.sh`, `.github/**/*.sh` | Shell script lint |
+| `shellcheck` | `.github/**/*.sh` | Shell script lint |
 
 ---
 
@@ -66,7 +66,7 @@ The error output includes the offending file and line number.
 
 ### `terraform-plan` fails with "missing variable" or "no such secret"
 
-Ensure all required GitHub secrets are configured. See [ci-secrets.md](./ci-secrets.md).
+Ensure all required GitHub secrets are configured in repository settings.
 
 The plan also requires:
 - `HZ_OBJECT_STORAGE_ACCESS_KEY` + `HZ_OBJECT_STORAGE_SECRET_KEY` for backend init
@@ -88,7 +88,7 @@ Common fixes:
 ### `shellcheck` fails
 
 ```sh
-shellcheck --severity=warning script/your-script.sh
+shellcheck --severity=warning .github/path/to/script.sh
 ```
 
 Common fixes:
@@ -108,4 +108,4 @@ Common fixes:
 | `HZ_OBJECT_STORAGE_ACCESS_KEY` | `terraform-plan` (backend) |
 | `HZ_OBJECT_STORAGE_SECRET_KEY` | `terraform-plan` (backend) |
 
-See [ci-secrets.md](./ci-secrets.md) for setup instructions.
+Configure the required secrets in repository settings before re-running the workflow.
