@@ -3,8 +3,6 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/actions/workflow/status/your-username/ai-infra-platform/pr-validation.yaml?label=pr%20validation&style=flat-square&color=185FA5" alt="PR Validation"/>
-  <img src="https://img.shields.io/github/actions/workflow/status/your-username/ai-infra-platform/dependency-review.yaml?label=dependency%20review&style=flat-square&color=534AB7" alt="Dependency Review"/>
   <img src="https://img.shields.io/badge/kubernetes-1.29%2B-326CE5?style=flat-square&logo=kubernetes&logoColor=white" alt="Kubernetes"/>
   <img src="https://img.shields.io/badge/terraform-1.5%2B-7B42BC?style=flat-square&logo=terraform&logoColor=white" alt="Terraform"/>
   <img src="https://img.shields.io/badge/argocd-2.10%2B-EF7B4D?style=flat-square&logo=argo&logoColor=white" alt="ArgoCD"/>
