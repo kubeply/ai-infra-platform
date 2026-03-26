@@ -27,12 +27,12 @@ ssh_public_key = "ssh-ed25519 AAAA... your-email@example.com"
 
 # ─── Optional (defaults shown) ────────────────────────────────────────────────
 
-# Hetzner server type. CX23 (2 vCPU, 4 GB RAM, 40 GB SSD) is the recommended
-# default for dev and CI clusters. Upgrade for heavier workloads:
-#   CX33 — 4 vCPU, 8 GB RAM   (4× the RAM, good for multiple platform modules)
+# Hetzner server type. CX33 (4 vCPU, 8 GB RAM, 80 GB SSD) is the recommended
+# default for demo and platform clusters. Upgrade for heavier workloads:
+#   CX23 — 2 vCPU, 4 GB RAM   (smaller dev/CI footprint)
 #   CX43 — 8 vCPU, 16 GB RAM  (AI workloads without GPU)
 #   CX53 — 16 vCPU, 32 GB RAM (large multi-tenant clusters)
-server_type = "cx23"
+server_type = "cx33"
 
 # Path to the SSH private key on this machine. Used by Terraform to connect to
 # the server after provisioning and retrieve the kubeconfig output.

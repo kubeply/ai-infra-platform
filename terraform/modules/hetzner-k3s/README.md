@@ -2,7 +2,7 @@
 
 Provisions a single-node k3s cluster on a Hetzner Cloud server. Outputs a kubeconfig string consumed by the GitOps bootstrap in Layer 2.
 
-**Target**: Hetzner CX23 — 2 vCPU, 4 GB RAM, 40 GB SSD. Ideal for dev, demo, and CI workloads.
+**Target**: Hetzner CX33 — 4 vCPU, 8 GB RAM, 80 GB SSD. Suitable for demo and platform workloads.
 
 ---
 
@@ -43,7 +43,7 @@ kubectl --kubeconfig ~/.kube/ai-infra-platform.yaml get nodes
 |------|------|---------|-------------|
 | `cluster_name` | `string` | required | Name for the server and cluster. Used as the Hetzner server name and SSH key prefix. |
 | `location` | `string` | required | Hetzner datacenter region. Options: `nbg1`, `fsn1`, `hel1`, `ash`, `sin`. |
-| `server_type` | `string` | `cx23` | Hetzner server type. `cx23` is the default (dev/CI). Upgrade to `cx33`+ for production. |
+| `server_type` | `string` | `cx33` | Hetzner server type. `cx33` is the default for demo/platform use. Use `cx23` only for smaller dev/CI clusters. |
 | `ssh_public_key` | `string` | required | SSH public key content. Deployed to the server for post-provision access. |
 | `ssh_private_key_path` | `string` | `~/.ssh/id_rsa` | Path to the corresponding SSH private key on this machine. Used to retrieve the kubeconfig. |
 | `k3s_version` | `string` | `""` | k3s version to install (e.g. `v1.29.2+k3s1`). Empty = latest stable. |

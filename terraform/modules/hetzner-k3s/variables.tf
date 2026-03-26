@@ -10,8 +10,8 @@ variable "location" {
 
 variable "server_type" {
   type        = string
-  default     = "cx23"
-  description = "Hetzner server type. CX23 (2 vCPU, 4 GB RAM) is the default — sufficient for dev/CI workloads."
+  default     = "cx33"
+  description = "Hetzner server type. CX33 (4 vCPU, 8 GB RAM) is the default — suitable for demo and platform workloads."
 }
 
 variable "ssh_public_key" {
