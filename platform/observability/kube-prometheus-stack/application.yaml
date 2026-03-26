@@ -1,0 +1,96 @@
+---
+# application.yaml — GitOps-managed monitoring stack.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    # renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts
+    targetRevision: "82.10.3"
+    helm:
+      releaseName: kube-prometheus-stack
+      values: |
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeProxy:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+
+        prometheusOperator:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+
+        alertmanager:
+          enabled: true
+          alertmanagerSpec:
+            retention: 24h
+            storage: {}
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+
+        grafana:
+          enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+            # Replace this placeholder hostname before using the module in a real environment.
+            hosts:
+              - grafana.platform.example.com
+            tls:
+              - secretName: grafana-tls
+                hosts:
+                  - grafana.platform.example.com
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              access: proxy
+              url: http://loki.observability.svc.cluster.local:3100
+              uid: loki
+              isDefault: false
+
+        prometheus:
+          enabled: true
+          prometheusSpec:
+            retention: 48h
+            retentionSize: 7GiB
+            resources:
+              requests:
+                cpu: 100m
+                memory: 768Mi
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 10Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
