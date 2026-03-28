@@ -104,12 +104,14 @@ resources:
   - ../../../ai-infra-platform/platform/networking
   - ../../../ai-infra-platform/platform/observability
   - ../../../ai-infra-platform/platform/security
-  - ../../../ai-infra-platform/platform/storage
-  - ../../../ai-infra-platform/platform/ai/qdrant
-  - ../../../ai-infra-platform/platform/ai/vllm
+  - ../../../ai-infra-platform/platform/storage   # 🚧
+  - ../../../ai-infra-platform/platform/ai/qdrant # 🚧
+  - ../../../ai-infra-platform/platform/ai/vllm   # 🚧
 ```
 
 Enable a module by adding its path. Disable it by removing the line. ArgoCD reconciles.
+
+`🚧` = work in progress / planned
 
 ---
 
@@ -122,16 +124,15 @@ default values and Grafana dashboards where applicable.
 
 | Module | What it installs | Required |
 |--------|-----------------|----------|
-| `gitops/` | ArgoCD, Helm repo sources | Yes |
-| `networking/ingress-nginx` | Ingress controller | Yes |
+| `gitops/` `🚧` | ArgoCD, Helm repo sources | Yes |
+| `networking/ingress-nginx` `🚧` | Ingress controller | Yes |
 | `networking/cert-manager` | Let's Encrypt + ClusterIssuer | Yes |
-| `networking/cloudflare-tunnel` | Zero-trust ingress (optional) | No |
 | `observability/kube-prometheus-stack` | Prometheus + Grafana + Alertmanager | Yes |
 | `observability/loki` | Log aggregation | Recommended |
 | `security/external-secrets` | ESO + SecretStore per provider | Yes |
 | `security/rbac` | Baseline ClusterRoles | Yes |
 | `security/kyverno` | Policy engine | Recommended |
-| `storage/velero` | Backup + restore | Recommended |
+| `storage/velero` `🚧` | Backup + restore | Recommended |
 
 <br/>
 
@@ -141,12 +142,12 @@ Optional modules for AI workloads. Each is independently opt-in.
 
 | Module | What it installs | Use case |
 |--------|-----------------|----------|
-| `ai/gpu/` | NVIDIA device plugin, time-slicing config | Any GPU workload |
-| `ai/vllm/` | vLLM deployment + autoscaling + OpenAPI spec | LLM inference serving |
-| `ai/qdrant/` | Qdrant vector DB + persistence + backup hooks | RAG, semantic search |
-| `ai/postgres-operator/` | CloudNativePG + connection pooling + backups | Relational data |
-| `ai/redis/` | Redis + Sentinel | Caching, queues |
-| `ai/argo-workflows/` | Workflow engine + templates + artifact storage | ML pipelines |
+| `ai/gpu/` `🚧` | NVIDIA device plugin, time-slicing config | Any GPU workload |
+| `ai/vllm/` `🚧` | vLLM deployment + autoscaling + OpenAPI spec | LLM inference serving |
+| `ai/qdrant/` `🚧` | Qdrant vector DB + persistence + backup hooks | RAG, semantic search |
+| `ai/postgres-operator/` `🚧` | CloudNativePG + connection pooling + backups | Relational data |
+| `ai/redis/` `🚧` | Redis + Sentinel | Caching, queues |
+| `ai/argo-workflows/` `🚧` | Workflow engine + templates + artifact storage | ML pipelines |
 
 ---
 
@@ -189,12 +190,12 @@ ai-infra-platform/
 │   ├── shared/           # dns, storage, secrets-backend
 │   └── examples/         # .tfvars.example per target
 ├── platform/
-│   ├── gitops/
+│   ├── gitops/           # 🚧
 │   ├── networking/
 │   ├── observability/
 │   ├── security/
-│   ├── storage/
-│   └── ai/               # gpu, vllm, qdrant, postgres, redis, workflows
+│   ├── storage/          # 🚧
+│   └── ai/               # 🚧 gpu, vllm, qdrant, postgres, redis, workflows
 ├── .github/workflows/    # public validation and dependency review
 └── docs/assets/          # README visuals
 ```
