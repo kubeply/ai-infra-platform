@@ -1,0 +1,15 @@
+---
+# kustomization.yaml — acme example cluster declarations.
+#
+# This is an example public cluster baseline that demonstrates how a shared
+# client cluster can be bootstrapped from the public ai-infra-platform
+# repository. Private overlays can later extend it from platform-delivery or a
+# client-specific submodule.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../platform/gitops
+  - ../../platform/networking
+  - ../../platform/observability
+  - ../../platform/security

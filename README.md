@@ -32,10 +32,10 @@ Two layers. One clean handoff.
                          │  terraform output kubeconfig
                          ▼
 ┌─────────────────────────────────────────────────────────┐
-│  LAYER 2 — private cluster declarations + platform/     │
+│  LAYER 2 — clusters/ + platform/                        │
 │  ArgoCD bootstrapped once, then owns everything.        │
-│  Private ops repo declares which modules are enabled.   │
-│  Public repo provides the reusable platform modules.    │
+│  Public repo ships the shared cluster baseline.         │
+│  Private ops repo adds overlays and environment hooks.  │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -83,30 +83,32 @@ terraform/shared/
 
 <img src="./docs/assets/banner-layer2.svg" alt="Layer 2 — clusters" width="100%"/>
 
-Environment-specific cluster declarations now live in the private operational
-repository. This public repo keeps the reusable platform modules and Terraform
-building blocks that those private cluster declarations consume.
+This public repo now carries the shared cluster baseline used during first
+bootstrap. Private operational repos can still add overlays, customer-specific
+apps, and environment hooks on top, but Layer 2 no longer depends on a private
+Git repository to start reconciling.
 
 **Operational handoff**
 
 ```bash
 # 1. Provision infrastructure with the modules in this repo
 # 2. Bootstrap ArgoCD from the operational repo
-# 3. Point ArgoCD at private cluster declarations
-# 4. Reconcile the enabled public modules from this repo
+# 3. Point ArgoCD at the shared public cluster baseline
+# 4. Layer on private overlays only when needed
 ```
 
 **Cluster config structure**
 
 ```yaml
-# clients/<environment>/cluster/kustomization.yaml
+# clusters/acme/kustomization.yaml
 resources:
-  - ../../../ai-infra-platform/platform/networking
-  - ../../../ai-infra-platform/platform/observability
-  - ../../../ai-infra-platform/platform/security
-  - ../../../ai-infra-platform/platform/storage   # 🚧
-  - ../../../ai-infra-platform/platform/ai/qdrant # 🚧
-  - ../../../ai-infra-platform/platform/ai/vllm   # 🚧
+  - ../../platform/gitops
+  - ../../platform/networking
+  - ../../platform/observability
+  - ../../platform/security
+  - ../../platform/storage   # 🚧
+  - ../../platform/ai/qdrant # 🚧
+  - ../../platform/ai/vllm   # 🚧
 ```
 
 Enable a module by adding its path. Disable it by removing the line. ArgoCD reconciles.
@@ -124,8 +126,8 @@ default values and Grafana dashboards where applicable.
 
 | Module | What it installs | Required |
 |--------|-----------------|----------|
-| `gitops/` `🚧` | ArgoCD, Helm repo sources | Yes |
-| `networking/ingress-nginx` `🚧` | Ingress controller | Yes |
+| `gitops/` | ArgoCD, Sealed Secrets | Yes |
+| `networking/traefik` | Ingress controller | Yes |
 | `networking/cert-manager` | Let's Encrypt + ClusterIssuer | Yes |
 | `observability/kube-prometheus-stack` | Prometheus + Grafana + Alertmanager | Yes |
 | `observability/loki` | Log aggregation | Recommended |
@@ -161,9 +163,10 @@ The public repo stays focused on the reusable platform surface.
 
 <img src="./docs/assets/banner-quickstart.svg" alt="Quickstart" width="100%"/>
 
-This repository is now the public vitrine: reusable Terraform modules, platform
-manifests, and reference assets. The operational bootstrap flow lives in the
-private `platform-delivery` repository that consumes this repo as a submodule.
+This repository is now the public vitrine: reusable Terraform modules, shared
+cluster declarations, platform manifests, and reference assets. The
+operational bootstrap flow lives in the private `platform-delivery`
+repository that consumes this repo as a submodule.
 
 ---
 
@@ -185,12 +188,14 @@ in the private operational repository.
 
 ```
 ai-infra-platform/
+├── clusters/
+│   └── acme/              # example public cluster baseline
 ├── terraform/
 │   ├── modules/          # one module per cloud provider
 │   ├── shared/           # dns, storage, secrets-backend
 │   └── examples/         # .tfvars.example per target
 ├── platform/
-│   ├── gitops/           # 🚧
+│   ├── gitops/
 │   ├── networking/
 │   ├── observability/
 │   ├── security/
@@ -204,8 +209,8 @@ ai-infra-platform/
 
 ## Public vs. Operational
 
-- Public repo: reusable Terraform modules, Kubernetes platform manifests, reference assets
-- Private repo: live cluster declarations, bootstrap scripts, deploy/smoke workflows, operator runbooks, internal specs
+- Public repo: reusable Terraform modules, shared cluster declarations, Kubernetes platform manifests, reference assets
+- Private repo: bootstrap scripts, deploy/smoke workflows, operator runbooks, private overlays, internal specs
 
 ---
 

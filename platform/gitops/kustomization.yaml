@@ -1,0 +1,11 @@
+---
+# kustomization.yaml — platform gitops module entry point.
+#
+# Clusters opt into the shared Layer 2 bootstrap by referencing this directory.
+# It composes the ArgoCD self-management and GitOps-safe secret controllers.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - argocd.yaml
+  - sealed-secrets.yaml
