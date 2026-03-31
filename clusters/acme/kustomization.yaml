@@ -13,3 +13,4 @@ resources:
   - ../../platform/networking
   - ../../platform/observability
   - ../../platform/security
+  - ../../platform/storage

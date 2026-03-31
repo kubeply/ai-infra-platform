@@ -106,7 +106,7 @@ resources:
   - ../../platform/networking
   - ../../platform/observability
   - ../../platform/security
-  - ../../platform/storage   # 🚧
+  - ../../platform/storage
   - ../../platform/ai/qdrant # 🚧
   - ../../platform/ai/vllm   # 🚧
 ```
@@ -134,7 +134,7 @@ default values and Grafana dashboards where applicable.
 | `security/external-secrets` | ESO + SecretStore per provider | Yes |
 | `security/rbac` | Baseline ClusterRoles | Yes |
 | `security/kyverno` | Policy engine | Recommended |
-| `storage/velero` `🚧` | Backup + restore | Recommended |
+| `storage/velero` | Backup + restore | Recommended |
 
 <br/>
 
@@ -199,7 +199,7 @@ ai-infra-platform/
 │   ├── networking/
 │   ├── observability/
 │   ├── security/
-│   ├── storage/          # 🚧
+│   ├── storage/
 │   └── ai/               # 🚧 gpu, vllm, qdrant, postgres, redis, workflows
 ├── .github/workflows/    # public validation and dependency review
 └── docs/assets/          # README visuals

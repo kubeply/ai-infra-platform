@@ -1,0 +1,11 @@
+---
+# kustomization.yaml — platform storage module entry point.
+#
+# Clusters opt into Layer 3 storage by referencing this directory once.
+# It currently exposes the Velero backup stack and leaves room for future
+# storage-oriented sub-components.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - velero/

@@ -1,0 +1,27 @@
+---
+# backup-storage-location.yaml — Reference S3-compatible storage contract.
+#
+# This baseline assumes the shared storage module provisions the reference
+# bucket name `ai-infra-platform-storage` at the default fsn1 endpoint and that
+# each cluster stores its backups under a dedicated prefix.
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: velero
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  provider: aws
+  default: true
+  credential:
+    name: velero-credentials
+    key: cloud
+  objectStorage:
+    bucket: ai-infra-platform-storage
+    prefix: clusters/acme
+  config:
+    region: eu-central-1
+    s3Url: https://fsn1.your-objectstorage.com
+    s3ForcePathStyle: "true"

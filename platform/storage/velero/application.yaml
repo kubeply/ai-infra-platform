@@ -1,0 +1,64 @@
+---
+# application.yaml — GitOps-managed Velero installation for the storage module.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  source:
+    repoURL: https://vmware-tanzu.github.io/helm-charts
+    chart: velero
+    # renovate: datasource=helm depName=velero registryUrl=https://vmware-tanzu.github.io/helm-charts
+    targetRevision: "12.0.0"
+    helm:
+      releaseName: velero
+      values: |
+        initContainers:
+          - name: velero-plugin-for-aws
+            image: velero/velero-plugin-for-aws:v1.14.0
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - mountPath: /target
+                name: plugins
+
+        credentials:
+          useSecret: true
+          existingSecret: velero-credentials
+
+        backupsEnabled: false
+        snapshotsEnabled: false
+        deployNodeAgent: true
+
+        configuration:
+          namespace: velero
+          uploaderType: kopia
+          defaultBackupStorageLocation: default
+          defaultVolumesToFsBackup: true
+          fsBackupTimeout: 4h
+          backupSyncPeriod: 1m
+          logLevel: info
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+
+        nodeAgent:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -1,0 +1,10 @@
+---
+# kustomization.yaml — Velero application plus repo-managed backup fixtures.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - application.yaml
+  - backup-storage-location.yaml
+  - credentials-eso.yaml
+  - schedule.yaml

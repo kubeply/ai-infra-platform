@@ -1,0 +1,19 @@
+---
+# schedule.yaml — Baseline recurring backup policy for the reference cluster.
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: cluster-daily
+  namespace: velero
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  schedule: "0 2 * * *"
+  useOwnerReferencesInBackup: false
+  template:
+    storageLocation: default
+    ttl: 168h0m0s
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true
+    includeClusterResources: true
