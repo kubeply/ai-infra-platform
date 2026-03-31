@@ -45,18 +45,12 @@ spec:
 
         grafana:
           enabled: true
+          # Keep Grafana internal by default. Public ingress/TLS requires a
+          # real DNS name and cluster-specific issuer wiring in a private
+          # overlay; the example cluster must not ship an impossible
+          # placeholder hostname.
           ingress:
-            enabled: true
-            ingressClassName: traefik
-            annotations:
-              cert-manager.io/cluster-issuer: letsencrypt-prod
-            # Replace this placeholder hostname before using the module in a real environment.
-            hosts:
-              - grafana.platform.example.com
-            tls:
-              - secretName: grafana-tls
-                hosts:
-                  - grafana.platform.example.com
+            enabled: false
           resources:
             requests:
               cpu: 50m

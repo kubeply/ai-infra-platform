@@ -136,6 +136,10 @@ default values and Grafana dashboards where applicable.
 | `security/kyverno` | Policy engine | Recommended |
 | `storage/velero` | Backup + restore | Recommended |
 
+Grafana stays internal by default in the public example cluster. If you want a
+public HTTPS endpoint, add the ingress hostname/TLS settings from a private
+overlay with a real DNS name instead of relying on the example baseline.
+
 <br/>
 
 <img src="./docs/assets/banner-ai.svg" alt="platform/ai — AI modules" width="100%"/>
