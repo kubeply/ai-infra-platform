@@ -207,13 +207,6 @@ ai-infra-platform/
 
 ---
 
-## Public vs. Operational
-
-- Public repo: reusable Terraform modules, shared cluster declarations, Kubernetes platform manifests, reference assets
-- Private repo: bootstrap scripts, deploy/smoke workflows, operator runbooks, private overlays, internal specs
-
----
-
 <br/>
 
 <p align="center">
