@@ -8,4 +8,3 @@ resources:
   - namespaces.yaml
   - kubernetes-store-rbac.yaml
   - cluster-secret-store.yaml
-  - external-secret-example.yaml
