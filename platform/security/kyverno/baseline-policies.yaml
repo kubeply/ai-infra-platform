@@ -15,6 +15,8 @@ metadata:
       exclude platform controller namespaces until stricter enforcement is
       planned deliberately.
 spec:
+  admission: true
+  emitWarning: false
   validationFailureAction: Audit
   background: true
   rules:
@@ -38,7 +40,9 @@ spec:
                 - observability
                 - sealed-secrets
                 - traefik
+      skipBackgroundRequests: true
       validate:
+        allowExistingViolations: true
         message: >-
           Privileged mode is disallowed. Containers must leave
           securityContext.privileged unset or set it to false.
@@ -70,6 +74,8 @@ metadata:
       Audit first and exclude the shared controller namespaces that the
       reference platform manages itself.
 spec:
+  admission: true
+  emitWarning: false
   validationFailureAction: Audit
   background: true
   rules:
@@ -93,7 +99,9 @@ spec:
                 - observability
                 - sealed-secrets
                 - traefik
+      skipBackgroundRequests: true
       validate:
+        allowExistingViolations: true
         message: An explicit image tag is required.
         pattern:
           spec:
@@ -119,7 +127,9 @@ spec:
                 - observability
                 - sealed-secrets
                 - traefik
+      skipBackgroundRequests: true
       validate:
+        allowExistingViolations: true
         message: Using the mutable `latest` image tag is not allowed.
         pattern:
           spec:
