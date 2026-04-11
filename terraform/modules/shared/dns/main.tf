@@ -5,5 +5,7 @@
 # This module does not register domains — it manages the zone configuration.
 
 data "cloudflare_zone" "zone" {
-  name = var.domain
+  filter = {
+    name = var.domain
+  }
 }
