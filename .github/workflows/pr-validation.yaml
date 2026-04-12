@@ -112,6 +112,7 @@ jobs:
           TF_VAR_cluster_name: ci-plan
           TF_VAR_location: fsn1
           TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
+          TF_VAR_existing_ssh_key_id: ${{ secrets.HCLOUD_SSH_KEY_ID }}
           TF_VAR_ssh_private_key_path: /tmp/ci_ssh_key
         run: |
           terraform -chdir=terraform/modules/hetzner-k3s plan \
