@@ -91,6 +91,3 @@ Restore path:
 3. Set `serverName` to the source cluster archive name.
 4. Apply through GitOps and wait for the restored cluster to become ready.
 5. Move workloads to the restored cluster after application-level validation.
-
-Redis remains a separate optional service module and is not implemented by this
-PostgreSQL module.
