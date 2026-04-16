@@ -152,7 +152,7 @@ Optional modules for AI workloads. Each is independently opt-in.
 | `ai/vllm/` `🚧` | vLLM deployment + autoscaling + OpenAPI spec | LLM inference serving |
 | `ai/qdrant/` `🚧` | Qdrant vector DB + persistence + backup hooks | RAG, semantic search |
 | `ai/postgres-operator/` | CloudNativePG + PgBouncer + backups | Relational data |
-| `ai/redis/` `🚧` | Redis + Sentinel | Caching, queues |
+| `ai/redis/` | Valkey-compatible Redis operator | Caching, queues, ephemeral state |
 | `ai/argo-workflows/` `🚧` | Workflow engine + templates + artifact storage | ML pipelines |
 
 **PostgreSQL**
@@ -165,6 +165,18 @@ or logical databases by default.
 Use the examples under `platform/ai/postgres-operator/examples/` from a
 client-specific entrypoint when a workload needs a database, access role,
 PgBouncer pooler, connection secret, or PostgreSQL-native backup policy.
+
+**Redis-Compatible Valkey**
+
+`platform/ai/redis/` installs the OT Redis Operator with pinned Helm chart
+version `0.24.0`. It stays optional: the public `clusters/acme` baseline does
+not create Redis-compatible instances by default.
+
+Use the examples under `platform/ai/redis/examples/` from a client-specific
+entrypoint when a workload needs an ephemeral cache, a persistent standalone
+Valkey instance, replicated Redis-compatible capacity, or a workload connection
+secret. The first server image family is pinned to `valkey/valkey:9.0.3`
+because Valkey is the Redis-compatible open source default for this module.
 
 ---
 

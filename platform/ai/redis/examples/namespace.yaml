@@ -1,0 +1,6 @@
+---
+# namespace.yaml - namespace for optional Redis-compatible examples.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-redis
