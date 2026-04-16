@@ -1,0 +1,39 @@
+---
+# redis-operator-application.yaml - GitOps-managed Redis-compatible operator.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  source:
+    repoURL: https://ot-container-kit.github.io/helm-charts
+    chart: redis-operator
+    # renovate: datasource=helm depName=redis-operator registryUrl=https://ot-container-kit.github.io/helm-charts
+    targetRevision: "0.24.0"
+    helm:
+      releaseName: redis-operator
+      values: |
+        redisOperator:
+          imagePullPolicy: IfNotPresent
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis-operator
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

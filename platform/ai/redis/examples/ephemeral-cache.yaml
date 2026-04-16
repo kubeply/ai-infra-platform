@@ -1,0 +1,32 @@
+---
+# ephemeral-cache.yaml - disposable Redis-compatible Valkey cache.
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: Redis
+metadata:
+  name: app-cache
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  redisConfig:
+    maxMemoryPercentOfLimit: 75
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+  kubernetesConfig:
+    # renovate: datasource=docker depName=valkey/valkey
+    image: valkey/valkey:9.0.3
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: app-cache-connection
+      key: password
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+  redisExporter:
+    enabled: false
+    image: quay.io/opstree/redis-exporter:v1.44.0
+    imagePullPolicy: IfNotPresent

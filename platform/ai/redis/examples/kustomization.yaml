@@ -1,0 +1,13 @@
+---
+# kustomization.yaml - opt-in example Redis-compatible Valkey declarations.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: demo-redis
+
+resources:
+  - namespace.yaml
+  - connection-secret-externalstore.yaml
+  - ephemeral-cache.yaml
+  - persistent-standalone.yaml
+  - ha-replication.yaml

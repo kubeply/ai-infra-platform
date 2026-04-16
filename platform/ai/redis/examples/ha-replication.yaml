@@ -1,0 +1,45 @@
+---
+# ha-replication.yaml - replicated Valkey declaration for higher availability.
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisReplication
+metadata:
+  name: app-redis-ha
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  clusterSize: 3
+  redisConfig:
+    maxMemoryPercentOfLimit: 75
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+  kubernetesConfig:
+    # renovate: datasource=docker depName=valkey/valkey
+    image: valkey/valkey:9.0.3
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: app-redis-ha-connection
+      key: password
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  redisExporter:
+    enabled: false
+    image: quay.io/opstree/redis-exporter:v1.44.0
+    imagePullPolicy: IfNotPresent
+  storage:
+    keepAfterDelete: true
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
