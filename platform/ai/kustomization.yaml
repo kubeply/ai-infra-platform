@@ -1,7 +1,8 @@
 ---
-# kustomization.yaml - optional AI and data service module entrypoints.
+# kustomization.yaml - optional AI-specific module entrypoint.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Keep this entrypoint empty so clusters opt into individual modules explicitly.
+# Keep this entrypoint empty until AI runtime modules are added. General data
+# services such as PostgreSQL and Redis-compatible Valkey live under storage/.
 resources: []

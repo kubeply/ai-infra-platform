@@ -23,7 +23,7 @@ capacity is needed:
 
 ```yaml
 resources:
-  - ../../platform/ai/redis
+  - ../../platform/storage/redis
 ```
 
 The public `clusters/acme` baseline does not include this module and does not

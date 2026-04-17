@@ -135,10 +135,37 @@ default values and Grafana dashboards where applicable.
 | `security/rbac` | Baseline ClusterRoles | Yes |
 | `security/kyverno` | Policy engine | Recommended |
 | `storage/velero` | Backup + restore | Recommended |
+| `storage/postgres-operator/` | CloudNativePG + PgBouncer + backups | Optional |
+| `storage/redis/` | Valkey-compatible Redis operator | Optional |
 
 Grafana stays internal by default in the public example cluster. If you want a
 public HTTPS endpoint, add the ingress hostname/TLS settings from a private
 overlay with a real DNS name instead of relying on the example baseline.
+
+**Storage Data Services**
+
+**PostgreSQL**
+
+`platform/storage/postgres-operator/` installs the CloudNativePG operator and the
+Barman Cloud backup plugin with pinned Helm chart versions. It stays optional:
+the public `clusters/acme` baseline does not create client PostgreSQL clusters
+or logical databases by default.
+
+Use the examples under `platform/storage/postgres-operator/examples/` from a
+client-specific entrypoint when a workload needs a database, access role,
+PgBouncer pooler, connection secret, or PostgreSQL-native backup policy.
+
+**Redis-Compatible Valkey**
+
+`platform/storage/redis/` installs the OT Redis Operator with pinned Helm chart
+version `0.24.0`. It stays optional: the public `clusters/acme` baseline does
+not create Redis-compatible instances by default.
+
+Use the examples under `platform/storage/redis/examples/` from a client-specific
+entrypoint when a workload needs an ephemeral cache, a persistent standalone
+Valkey instance, replicated Redis-compatible capacity, or a workload connection
+secret. The first server image family is pinned to `valkey/valkey:9.0.3`
+because Valkey is the Redis-compatible open source default for this module.
 
 <br/>
 
@@ -151,32 +178,7 @@ Optional modules for AI workloads. Each is independently opt-in.
 | `ai/gpu/` `🚧` | NVIDIA device plugin, time-slicing config | Any GPU workload |
 | `ai/vllm/` `🚧` | vLLM deployment + autoscaling + OpenAPI spec | LLM inference serving |
 | `ai/qdrant/` `🚧` | Qdrant vector DB + persistence + backup hooks | RAG, semantic search |
-| `ai/postgres-operator/` | CloudNativePG + PgBouncer + backups | Relational data |
-| `ai/redis/` | Valkey-compatible Redis operator | Caching, queues, ephemeral state |
 | `ai/argo-workflows/` `🚧` | Workflow engine + templates + artifact storage | ML pipelines |
-
-**PostgreSQL**
-
-`platform/ai/postgres-operator/` installs the CloudNativePG operator and the
-Barman Cloud backup plugin with pinned Helm chart versions. It stays optional:
-the public `clusters/acme` baseline does not create client PostgreSQL clusters
-or logical databases by default.
-
-Use the examples under `platform/ai/postgres-operator/examples/` from a
-client-specific entrypoint when a workload needs a database, access role,
-PgBouncer pooler, connection secret, or PostgreSQL-native backup policy.
-
-**Redis-Compatible Valkey**
-
-`platform/ai/redis/` installs the OT Redis Operator with pinned Helm chart
-version `0.24.0`. It stays optional: the public `clusters/acme` baseline does
-not create Redis-compatible instances by default.
-
-Use the examples under `platform/ai/redis/examples/` from a client-specific
-entrypoint when a workload needs an ephemeral cache, a persistent standalone
-Valkey instance, replicated Redis-compatible capacity, or a workload connection
-secret. The first server image family is pinned to `valkey/valkey:9.0.3`
-because Valkey is the Redis-compatible open source default for this module.
 
 ---
 
@@ -227,7 +229,7 @@ ai-infra-platform/
 │   ├── observability/
 │   ├── security/
 │   ├── storage/
-│   └── ai/               # optional gpu, vllm, qdrant, postgres, redis, workflows
+│   └── ai/               # optional gpu, vllm, qdrant, workflows
 ├── .github/workflows/    # public validation and dependency review
 └── docs/assets/          # README visuals
 ```
