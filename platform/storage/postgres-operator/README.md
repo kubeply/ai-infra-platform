@@ -17,7 +17,7 @@ Add the module from a cluster-specific kustomization when PostgreSQL is needed:
 
 ```yaml
 resources:
-  - ../../platform/ai/postgres-operator
+  - ../../platform/storage/postgres-operator
 ```
 
 The public `clusters/acme` baseline does not include this module and does not
