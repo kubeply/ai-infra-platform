@@ -15,7 +15,7 @@ permissions:
 jobs:
   # Detect which paths changed so unrelated jobs can be skipped.
   changes:
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     outputs:
       terraform: ${{ steps.filter.outputs.terraform }}
       yaml: ${{ steps.filter.outputs.yaml }}
@@ -52,7 +52,7 @@ jobs:
   terraform-fmt:
     needs: changes
     if: needs.changes.outputs.terraform == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
@@ -62,7 +62,7 @@ jobs:
   terraform-validate:
     needs: changes
     if: needs.changes.outputs.terraform == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
@@ -82,7 +82,7 @@ jobs:
   terraform-plan:
     needs: changes
     if: needs.changes.outputs.terraform == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     permissions:
       contents: read
       pull-requests: write
@@ -165,7 +165,7 @@ jobs:
   yaml-lint:
     needs: changes
     if: needs.changes.outputs.yaml == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install yamllint
@@ -178,7 +178,7 @@ jobs:
   k8s-validate:
     needs: changes
     if: needs.changes.outputs.k8s == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     env:
       # renovate: datasource=github-releases depName=yannh/kubeconform
       KUBECONFORM_VERSION: v0.7.0
@@ -206,7 +206,7 @@ jobs:
   shellcheck:
     needs: changes
     if: needs.changes.outputs.shell == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install shellcheck
@@ -221,7 +221,7 @@ jobs:
   renovate-config:
     needs: changes
     if: needs.changes.outputs.renovate == 'true'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Validate Renovate config

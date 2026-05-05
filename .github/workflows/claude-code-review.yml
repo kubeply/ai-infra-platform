@@ -20,7 +20,7 @@ jobs:
     #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
 
     if: github.event.pull_request.user.login == 'chainyo'
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     permissions:
       contents: read
       pull-requests: read
