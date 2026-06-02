@@ -194,8 +194,12 @@ jobs:
           chmod +x /usr/local/bin/kubeconform
       - name: Validate Kubernetes manifests
         run: |
-          find platform/ clusters/ apps/ -name '*.yaml' -o -name '*.yml' 2>/dev/null \
-            | xargs -r kubeconform \
+          {
+            find platform/ clusters/ apps/ \
+              -path 'platform/gitops/image-updater/examples/*' -prune \
+              -o \( -name '*.yaml' -o -name '*.yml' \) -print
+            find platform/gitops/image-updater/examples/ -name '*.yaml'
+          } 2>/dev/null | xargs -r kubeconform \
                 -strict \
                 -ignore-missing-schemas \
                 -kubernetes-version "${K8S_SCHEMA_VERSION}" \

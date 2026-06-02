@@ -1,0 +1,28 @@
+---
+# image-updater.yaml - example app-specific ImageUpdater declaration.
+#
+# Copy this into the app or client overlay that owns the target kustomization
+# and replace repository, branch, app name, image names, and paths.
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: sample-app-images
+  namespace: argocd
+spec:
+  writeBackConfig:
+    method: git:secret:argocd/argocd-image-updater-git
+    gitConfig:
+      repository: https://github.com/example/sample-app
+      branch: main
+      writeBackTarget: kustomization:/apps/sample-api
+  applicationRefs:
+    - namePattern: sample-app-cluster
+      images:
+        - alias: sample-api
+          imageName: ghcr.io/example/sample-api:a1b2c3d
+          commonUpdateSettings:
+            updateStrategy: newest-build
+            allowTags: "regexp:^[0-9a-f]{7}$"
+          manifestTargets:
+            kustomize:
+              name: ghcr.io/example/sample-api

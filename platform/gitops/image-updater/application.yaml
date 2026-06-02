@@ -1,0 +1,45 @@
+---
+# application.yaml - optional Argo CD Image Updater installation.
+#
+# This module installs the controller only. Workload-specific ImageUpdater
+# resources should live next to the app or environment overlay they update.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-image-updater
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argocd-image-updater
+    # renovate: datasource=helm depName=argocd-image-updater registryUrl=https://argoproj.github.io/argo-helm
+    targetRevision: "1.2.2"
+    helm:
+      releaseName: argocd-image-updater
+      values: |
+        config:
+          git.user: "gitops-image-updater"
+          git.email: "gitops-image-updater@example.com"
+          git.commit-message-template: "chore(deploy): update {{ .AppName }} images"
+          registries:
+            - name: GitHub Container Registry
+              prefix: ghcr.io
+              api_url: https://ghcr.io
+              credentials: secret:argocd/argocd-image-updater-ghcr#credentials
+
+        extraArgs:
+          - --interval
+          - 2m
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -103,6 +103,7 @@ Git repository to start reconciling.
 # clusters/acme/kustomization.yaml
 resources:
   - ../../platform/gitops
+  - ../../platform/gitops/image-updater # optional image automation
   - ../../platform/networking
   - ../../platform/observability
   - ../../platform/security
@@ -127,6 +128,7 @@ default values and Grafana dashboards where applicable.
 | Module | What it installs | Required |
 |--------|-----------------|----------|
 | `gitops/` | ArgoCD, Sealed Secrets | Yes |
+| `gitops/image-updater/` | Git writeback for app image tags | Optional |
 | `networking/traefik` | Ingress controller | Yes |
 | `networking/cert-manager` | Let's Encrypt + ClusterIssuer | Yes |
 | `observability/kube-prometheus-stack` | Prometheus + Grafana + Alertmanager | Yes |
@@ -166,6 +168,15 @@ entrypoint when a workload needs an ephemeral cache, a persistent standalone
 Valkey instance, replicated Redis-compatible capacity, or a workload connection
 secret. The first server image family is pinned to `valkey/valkey:9.0.3`
 because Valkey is the Redis-compatible open source default for this module.
+
+**App Image Automation**
+
+`platform/gitops/image-updater/` installs Argo CD Image Updater for clusters
+that want app image tags promoted through Git. Workload overlays declare their
+own `ImageUpdater` resources and should target Kustomize `images:` blocks with
+short Git SHA tags. Keep updater-only image writeback paths ignored by image
+build workflows to avoid rebuild loops; see
+`platform/gitops/image-updater/examples/`.
 
 <br/>
 
