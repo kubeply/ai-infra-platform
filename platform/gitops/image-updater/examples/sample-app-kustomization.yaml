@@ -1,0 +1,15 @@
+---
+# sample-app-kustomization.yaml - example writeback target.
+#
+# Argo CD Image Updater writes newTag values here. Keep image names stable and
+# let short Git SHA tags represent the deployed build.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+
+images:
+  - name: ghcr.io/example/sample-api
+    newName: ghcr.io/example/sample-api
+    newTag: 1234567
