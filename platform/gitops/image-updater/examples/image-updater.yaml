@@ -19,7 +19,7 @@ spec:
     - namePattern: sample-app-cluster
       images:
         - alias: sample-api
-          imageName: ghcr.io/example/sample-api:1234567
+          imageName: ghcr.io/example/sample-api:a1b2c3d
           commonUpdateSettings:
             updateStrategy: newest-build
             allowTags: "regexp:^[0-9a-f]{7}$"
