@@ -23,7 +23,7 @@ jobs:
       shell: ${{ steps.filter.outputs.shell }}
       renovate: ${{ steps.filter.outputs.renovate }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         id: filter
         with:
@@ -54,7 +54,7 @@ jobs:
     if: needs.changes.outputs.terraform == 'true'
     runs-on: depot-ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive ./terraform
@@ -64,7 +64,7 @@ jobs:
     if: needs.changes.outputs.terraform == 'true'
     runs-on: depot-ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
       - name: Validate hetzner-k3s module
         run: |
@@ -87,7 +87,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
@@ -167,7 +167,7 @@ jobs:
     if: needs.changes.outputs.yaml == 'true'
     runs-on: depot-ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install yamllint
         run: pip install yamllint
       - name: Lint YAML files
@@ -185,7 +185,7 @@ jobs:
       # Pinned k8s schema version — matches k3s v1.29.x target.
       K8S_SCHEMA_VERSION: 1.29.0
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install kubeconform
         run: |
           curl -sfLo /tmp/kubeconform.tar.gz \
@@ -208,7 +208,7 @@ jobs:
     if: needs.changes.outputs.shell == 'true'
     runs-on: depot-ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install shellcheck
         run: sudo apt-get install -y shellcheck
       - name: Run shellcheck
@@ -223,6 +223,6 @@ jobs:
     if: needs.changes.outputs.renovate == 'true'
     runs-on: depot-ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Validate Renovate config
         run: npx --yes -p renovate renovate-config-validator renovate.json
